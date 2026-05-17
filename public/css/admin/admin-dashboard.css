@@ -1,0 +1,154 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f7fb;
+    color:#222;
+    padding:40px;
+}
+
+/* TOPBAR */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:50px;
+}
+
+.logo{
+    font-size:32px;
+    font-weight:700;
+    color:#6c4cff;
+    letter-spacing:-1px;
+}
+
+.logout-btn{
+    border:none;
+    background:#ff4d4d;
+    color:white;
+    padding:12px 22px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.25s ease;
+}
+
+.logout-btn:hover{
+    background:#e63c3c;
+    transform:translateY(-2px);
+}
+
+/* HEADINGS */
+
+h1{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#777;
+    margin-bottom:35px;
+    font-size:18px;
+}
+
+/* TABLE */
+
+.events-table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,0.06);
+}
+
+.events-table thead{
+    background:linear-gradient(135deg,#6c4cff,#8d72ff);
+}
+
+.events-table th{
+    color:white;
+    text-align:left;
+    padding:20px;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.4px;
+}
+
+.events-table td{
+    padding:20px;
+    border-bottom:1px solid #f0f0f0;
+    vertical-align:top;
+    color:#444;
+    font-size:15px;
+}
+
+.events-table tr:last-child td{
+    border-bottom:none;
+}
+
+.events-table tbody tr{
+    transition:0.2s ease;
+}
+
+.events-table tbody tr:hover{
+    background:#f8f7ff;
+}
+
+/* ACTION BUTTON */
+
+.delete-btn{
+    background:#ff4d4d;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.25s ease;
+}
+
+.delete-btn:hover{
+    background:#e63c3c;
+    transform:translateY(-1px);
+}
+
+/* EMPTY STATE */
+
+.empty{
+    text-align:center;
+    padding:35px !important;
+    color:#888;
+    font-size:16px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+    body{
+        padding:20px;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    h1{
+        font-size:32px;
+    }
+
+    .events-table{
+        display:block;
+        overflow-x:auto;
+        white-space:nowrap;
+    }
+
+}

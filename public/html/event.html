@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background:#f4f7fb;
+            padding:40px;
+            color:#222;
+        }
+
+        .card{
+            background:white;
+            padding:25px;
+            border-radius:20px;
+            max-width:700px;
+            margin:auto;
+            box-shadow:0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        h1{
+            margin-bottom:10px;
+        }
+
+        .meta{
+            color:#666;
+            margin-bottom:10px;
+        }
+
+        .upload-box{
+            margin-top:25px;
+            padding:20px;
+            border:2px dashed #6c4cff;
+            border-radius:15px;
+        }
+
+        input, button{
+            width:100%;
+            margin-top:10px;
+            padding:12px;
+            border-radius:10px;
+        }
+
+        button{
+            background:#6c4cff;
+            color:white;
+            border:none;
+            cursor:pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1 id="title">Loading...</h1>
+
+    <div class="meta" id="meta"></div>
+
+    <p id="desc"></p>
+
+    <div class="upload-box">
+
+        <h3>Join this event</h3>
+
+        <input type="text" id="guestName" placeholder="Your name">
+        <input type="file" id="file">
+
+        <button onclick="upload()">Upload Memory</button>
+
+    </div>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const slug = params.get("slug");
+
+async function loadEvent(){
+
+    const res = await fetch(`/api/public/events/${slug}`);
+    const data = await res.json();
+
+    if(!res.ok){
+        document.body.innerHTML = "<h2>Event not found</h2>";
+        return;
+    }
+
+    document.getElementById("title").innerText = data.title;
+    document.getElementById("desc").innerText = data.description ?? "";
+    document.getElementById("meta").innerText =
+        `📅 ${data.event_date} | 👤 ${data.owner ?? 'Unknown'}`;
+}
+
+async function upload(){
+
+    const name = document.getElementById("guestName").value;
+    const file = document.getElementById("file").files[0];
+
+    if(!name || !file){
+        alert("Fill all fields");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("guest_name", name);
+    formData.append("file", file);
+
+    try{
+
+        const res = await fetch(
+            `/api/events/${slug}/uploads`,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await res.json();
+
+        if(!res.ok){
+            alert(data.message || "Upload failed");
+            return;
+        }
+
+        alert("Memory uploaded successfully 🎉");
+
+        document.getElementById("guestName").value = "";
+        document.getElementById("file").value = "";
+
+    }catch(err){
+        console.error(err);
+        alert("Something went wrong");
+    }
+}
+
+loadEvent();
+
+</script>
+
+</body>
+</html>

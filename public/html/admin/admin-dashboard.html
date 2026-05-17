@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - EventShare</title>
+
+    <link rel="stylesheet" href="../../css/admin/admin-dashboard.css">
+</head>
+
+<body>
+
+    <div class="topbar">
+
+        <div class="logo">
+            EventShare Admin
+        </div>
+
+        <button class="logout-btn" onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+    <h1>All Events</h1>
+
+    <p class="subtitle">
+        Manage and moderate all platform events.
+    </p>
+
+    <table class="events-table">
+
+        <thead>
+
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Slug</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+
+        </thead>
+
+        <tbody id="eventsContainer">
+
+        </tbody>
+
+    </table>
+
+<script>
+
+    async function loadEvents(){
+
+        const token = localStorage.getItem("token");
+
+        const res = await fetch("/api/events", {
+            headers:{
+                "Authorization": `Bearer ${token}`,
+                "Accept":"application/json"
+            }
+        });
+
+        const events = await res.json();
+
+        const container = document.getElementById("eventsContainer");
+
+        if(events.length === 0){
+
+            container.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty">
+                        No events found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        events.forEach(event => {
+
+            container.innerHTML += `
+                <tr>
+
+                    <td>${event.id}</td>
+
+                    <td>${event.title}</td>
+
+                    <td>${event.slug}</td>
+
+                    <td>${event.event_date ?? 'N/A'}</td>
+
+                    <td>${event.description ?? 'No description'}</td>
+
+                    <td>
+                        <button
+                            class="delete-btn"
+                            onclick="deleteEvent(${event.id})"
+                        >
+                            Delete
+                        </button>
+                    </td>
+
+                </tr>
+            `;
+        });
+    }
+
+    async function deleteEvent(id){
+
+        const confirmDelete = confirm("Delete this event?");
+
+        if(!confirmDelete) return;
+
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`/api/events/${id}`, {
+            method:"DELETE",
+            headers:{
+                "Authorization": `Bearer ${token}`,
+                "Accept":"application/json"
+            }
+        });
+
+        const data = await res.json();
+
+        alert(data.message);
+
+        loadEvents();
+    }
+
+    async function logout(){
+
+        const token = localStorage.getItem("token");
+
+        await fetch("/api/logout", {
+            method:"POST",
+            headers:{
+                "Authorization": `Bearer ${token}`,
+                "Accept":"application/json"
+            }
+        });
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+
+        window.location.href = "/html/auth/login.html";
+    }
+
+    loadEvents();
+
+</script>
+
+</body>
+</html>

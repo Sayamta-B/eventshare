@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard - EventShare</title>
+
+    <link rel="stylesheet" href="../../css/organizer/organizer-dashboard.css">
+</head>
+
+<body>
+
+<div class="topbar">
+
+    <div>
+        <div class="logo">EventShare</div>
+        <p class="welcome-text">Welcome back 👋</p>
+    </div>
+
+    <button class="logout-btn" id="logoutBtn">
+        Logout
+    </button>
+
+</div>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+
+        <h1>
+            Your Events,
+            <span>Your Memories</span>
+        </h1>
+
+        <p>
+            Create beautiful shared galleries where guests upload moments instantly through QR codes and links.
+        </p>
+
+        <button class="create-btn" id="openCreateBtn">
+            + Create Event
+        </button>
+
+    </div>
+</section>
+
+<!-- EVENTS -->
+<div class="section-header">
+    <h2>Your Events</h2>
+    <p>Manage your shared memories and guest uploads.</p>
+</div>
+
+<div class="events-grid" id="eventsContainer"></div>
+
+<!-- CREATE MODAL -->
+<div class="modal" id="createModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Create Event</h2>
+            <button class="close-btn" id="closeCreateBtn">✕</button>
+        </div>
+
+        <form id="createEventForm">
+
+            <div class="form-group">
+                <label>Event Title</label>
+                <input type="text" name="title" placeholder="Wedding Night 2026" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" placeholder="Describe your event..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Event Date</label>
+                <input type="date" name="event_date" required>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Create Event
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadEvents();
+});
+
+/* ---------------- EVENTS ---------------- */
+
+async function loadEvents() {
+
+    const res = await fetch("/api/events", {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    const data = await res.json();
+    const events = Array.isArray(data) ? data : (data.data ?? []);
+
+    const container = document.getElementById("eventsContainer");
+
+    if (events.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>No events yet</h3>
+                <p>Start creating your first shared memory experience.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = events.map(event => `
+        <div class="event-card">
+
+            <div class="event-top">
+
+                <div>
+                    <h3>${event.title}</h3>
+                    <p class="event-date">📅 ${event.event_date}</p>
+                </div>
+
+                <div class="event-badge">Live</div>
+
+            </div>
+
+            <p class="event-description">
+                ${event.description ?? 'No description'}
+            </p>
+
+            <div class="event-link">
+                🔗 /public/events/${event.slug}
+            </div>
+
+            <div class="event-actions">
+
+                <button class="action-btn secondary-btn view-uploads-btn"
+                        data-slug="${event.slug}">
+                    View Uploads
+                </button>
+
+                <button class="action-btn delete-btn delete-btn-js"
+                        data-id="${event.id}">
+                    Delete
+                </button>
+
+            </div>
+
+        </div>
+    `).join("");
+}
+
+/* ---------------- EVENT DELEGATION ---------------- */
+
+document.addEventListener("click", (e) => {
+
+    // View uploads
+    if (e.target.classList.contains("view-uploads-btn")) {
+        const slug = e.target.dataset.slug;
+        window.location.href = `uploadView.html?slug=${slug}`;
+    }
+
+    // Delete event
+    if (e.target.classList.contains("delete-btn-js")) {
+        const id = e.target.dataset.id;
+        deleteEvent(id);
+    }
+
+});
+
+/* ---------------- DELETE EVENT ---------------- */
+
+async function deleteEvent(id) {
+
+    if (!confirm("Delete this event?")) return;
+
+    await fetch(`/api/events/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    loadEvents();
+}
+
+/* ---------------- LOGOUT ---------------- */
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+
+    await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    localStorage.clear();
+    window.location.href = "/html/auth/login.html";
+});
+
+/* ---------------- MODAL ---------------- */
+
+const modal = document.getElementById("createModal");
+
+document.getElementById("openCreateBtn").onclick = () => {
+    modal.style.display = "flex";
+};
+
+document.getElementById("closeCreateBtn").onclick = () => {
+    modal.style.display = "none";
+};
+
+/* ---------------- CREATE EVENT ---------------- */
+
+document.getElementById("createEventForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const formData = {
+        title: this.title.value,
+        description: this.description.value,
+        event_date: this.event_date.value
+    };
+
+    const res = await fetch("/api/events", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(formData)
+    });
+
+    const data = await res.json();
+
+    alert(data.message ?? "Event created");
+
+    modal.style.display = "none";
+    this.reset();
+    loadEvents();
+});
+</script>
+
+</body>
+</html>

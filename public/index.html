@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventShare</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+
+<script>
+    function goToRegister(){
+        window.location.href = "html/auth/register.html";
+    }
+
+    function goToLogin(){
+        window.location.href = "html/auth/login.html";
+    }
+</script>
+
+<div class="container">
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+
+        <div class="logo">
+            EventShare
+        </div>
+
+        <div class="nav-buttons">
+
+            <!-- FIXED -->
+            <button class="btn btn-login" onclick="goToLogin()">
+                Login
+            </button>
+
+            <button class="btn btn-primary" onclick="goToRegister()">
+                Get Started
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <h1>
+                Every Guest Has
+                <span>A Story To Share</span>
+            </h1>
+
+            <p>
+                Let guests upload photos and videos instantly using a simple link or QR code.
+                No apps. No stress. Just shared memories.
+            </p>
+
+            <div class="hero-buttons">
+
+                <!-- FIXED -->
+                <button class="btn btn-primary" onclick="goToRegister()">
+                    Start Your Event
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="hero-image">
+
+            <h2>
+                Weddings. Parties. Festivals. Trips.
+            </h2>
+
+            <!-- NEW GUEST ACCESS BOX -->
+            <div class="guest-access">
+
+                <div class="qr-box">
+                    <div class="fake-qr">
+                        QR
+                    </div>
+
+                    <p class="qr-text">
+                        Scan Event QR
+                    </p>
+                </div>
+
+                <div class="divider">
+                    OR
+                </div>
+
+                <div class="event-code-box">
+
+                    <input 
+                        type="text" 
+                        id="eventCode"
+                        placeholder="Enter Event Slug"
+                    >
+
+                    <button onclick="joinEvent()">
+                        Join Event
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FEATURES -->
+    <h2 class="section-title">Why people love EventShare ✨</h2>
+    <p class="section-subtitle">Built for modern events and real memories.</p>
+
+    <section class="features">
+
+        <div class="feature-card">
+            <h3>📸 Instant Uploads</h3>
+            <p>Guests upload photos and videos in seconds.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🔗 QR & Links</h3>
+            <p>Share your event easily with a QR code or link.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🛡️ Full Control</h3>
+            <p>You approve what appears in your gallery.</p>
+        </div>
+
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <h2 class="section-title">How It Works</h2>
+
+    <section class="steps">
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Create Event</h3>
+            <p>Set up your event in seconds.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Share Link</h3>
+            <p>Send invite link or QR code.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Collect Memories</h3>
+            <p>Guests upload photos and videos.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Build Gallery</h3>
+            <p>Approve uploads and publish memories.</p>
+        </div>
+
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+
+        <h2>Turn Every Event Into A Shared Memory 📷</h2>
+
+        <p>
+            Start collecting moments from everyone — not just one camera.
+        </p>
+
+        <button class="btn btn-primary" onclick="goToRegister()">
+            Create Your First Event
+        </button>
+
+    </section>
+
+    <footer>
+        © 2026 EventShare — Built for shared memories.
+    </footer>
+
+</div>
+
+<script>
+
+    function scrollToGuestAccess(){
+        document.querySelector(".guest-access")
+            .scrollIntoView({ behavior: "smooth" });
+    }
+
+    function joinEvent(){
+
+        const code = document.getElementById("eventCode").value;
+
+        if(!code){
+            alert("Please enter event slug");
+            return;
+        }
+
+        window.location.href = `html/event.html?slug=${code}`;
+    }
+
+</script>
+</body>
+</html>

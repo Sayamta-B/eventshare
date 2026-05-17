@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EventShare</title>
+
+    <link rel="stylesheet" href="../../css/auth/register.css">
+</head>
+
+<body>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("loginForm").addEventListener("submit", async function(e){
+                e.preventDefault();
+
+                const formData = {
+                    email: this.email.value,
+                    password: this.password.value
+                };
+
+                const res = await fetch("http://127.0.0.1:8000/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alert(data.message+ "You are logged in.");
+                    return;
+                }
+
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("role", data.role);
+
+                if (data.role === "admin") {
+                    window.location.href = "../admin/admin-dashboard.html";
+                } else {
+                    window.location.href = "../organizer/organizer-dashboard.html";
+                }
+            });
+        });
+    </script>
+
+<div class="card">
+
+    <div class="logo">
+        EventShare
+    </div>
+
+    <p class="subtitle">
+        Welcome back organizer 👋
+    </p>
+
+    <form method="POST" id="loginForm">
+
+        <div class="form-group">
+            <label>Email</label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="john@example.com"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Your password"
+                required
+            >
+        </div>
+
+        <button type="submit" class="btn">
+            Login
+        </button>
+
+    </form>
+
+    <div class="bottom-text">
+        Don’t have an account?
+        <a href="register.html">Create one</a>
+    </div>
+
+</div>
+
+</body>
+</html>

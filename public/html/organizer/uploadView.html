@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Uploads</title>
+
+    <link rel="stylesheet" href="../../css/organizer/uploadView.css">
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="logo">EventShare</div>
+
+    <button onclick="goBack()" class="back-btn">
+        ← Back
+    </button>
+</header>
+
+<section class="hero">
+    <h1>Event Uploads</h1>
+    <p id="eventSlugText"></p>
+</section>
+
+<div class="uploads-grid" id="uploadsContainer"></div>
+
+<div id="emptyState" class="empty-state" style="display:none;">
+    <h3>No uploads yet</h3>
+    <p>Be the first to share a memory 📸</p>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const slug = params.get("slug");
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (!slug) {
+        document.getElementById("uploadsContainer").innerHTML =
+            "<p>Invalid event link</p>";
+        return;
+    }
+
+    document.getElementById("eventSlugText").innerText =
+        `Event: ${slug}`;
+
+    loadUploads();
+});
+
+/* ---------------- LOAD UPLOADS ---------------- */
+
+async function loadUploads() {
+
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`/api/events/${slug}/uploads`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    const data = await res.json();
+    const uploads = data.uploads ?? [];
+
+    const container = document.getElementById("uploadsContainer");
+    const emptyState = document.getElementById("emptyState");
+
+    if (!uploads.length) {
+        emptyState.style.display = "block";
+        container.innerHTML = "";
+        return;
+    }
+
+    emptyState.style.display = "none";
+
+    container.innerHTML = uploads.map(upload => {
+
+        const fileUrl = `/storage/${upload.file_path}`;
+        const guest = upload.guest?.name ?? 'Guest';
+        const date = new Date(upload.created_at).toLocaleString();
+        const status = upload.status ?? 'pending';
+
+        return `
+            <div class="upload-card">
+
+                <!-- MEDIA -->
+                <div class="upload-media">
+                    ${
+                        upload.file_type === "photo"
+                        ? `<img src="${fileUrl}" alt="upload">`
+                        : `<video src="${fileUrl}" controls></video>`
+                    }
+                </div>
+
+                <!-- INFO -->
+                <div class="upload-info">
+                    <strong>${guest}</strong>
+                    <div>${date}</div>
+                    <span class="status">${status}</span>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="upload-actions">
+
+                    <button class="btn approve"
+                        onclick="updateStatus(${upload.id}, 'approved')">
+                        Approve
+                    </button>
+
+                    <button class="btn reject"
+                        onclick="updateStatus(${upload.id}, 'rejected')">
+                        Reject
+                    </button>
+
+                    <button class="btn delete"
+                        onclick="deleteUpload(${upload.id})">
+                        Delete
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    }).join("");
+}
+
+/* ---------------- UPDATE STATUS ---------------- */
+
+async function updateStatus(id, status) {
+
+    const token = localStorage.getItem("token");
+
+    await fetch(`/api/events/${slug}/uploads/${id}`, {
+        method: "PUT",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({ status })
+    });
+
+    loadUploads();
+}
+
+/* ---------------- DELETE UPLOAD ---------------- */
+
+async function deleteUpload(id) {
+
+    if (!confirm("Delete this upload?")) return;
+
+    const token = localStorage.getItem("token");
+
+    await fetch(`/api/events/${slug}/uploads/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    loadUploads();
+}
+
+/* ---------------- NAV ---------------- */
+
+function goBack() {
+    window.history.back();
+}
+</script>
+
+</body>
+</html>
