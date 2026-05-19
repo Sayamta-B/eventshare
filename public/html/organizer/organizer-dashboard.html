@@ -10,6 +10,7 @@
 
 <body>
 
+
 <div class="topbar">
 
     <div>
@@ -17,9 +18,18 @@
         <p class="welcome-text">Welcome back 👋</p>
     </div>
 
-    <button class="logout-btn" id="logoutBtn">
-        Logout
-    </button>
+    <div class="topbar-actions">
+
+        <!-- Profile Icon -->
+        <button class="icon-btn" id="profileBtn" title="Profile">
+            👤
+        </button>
+
+        <button class="logout-btn" id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
 
 </div>
 
@@ -80,6 +90,93 @@
 
             <button type="submit" class="submit-btn">
                 Create Event
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div class="modal" id="profileModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Your Profile</h2>
+            <button class="close-btn" id="closeProfileBtn">✕</button>
+        </div>
+
+        <form id="profileForm">
+
+            <input type="hidden" name="id" id="profileId">
+
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" id="profileName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" id="profileEmail" required>
+            </div>
+
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" name="password" id="profilePassword" placeholder="Leave blank to keep current">
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Update Profile
+            </button>
+
+            <button type="button" class="submit-btn" id="deleteAccountBtn" style="background-color: #e74c3c; margin-top: 10px;">
+                Delete Account
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- EDIT MODAL -->
+<div class="modal" id="editModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Edit Event</h2>
+            <button class="close-btn" id="closeEditBtn">✕</button>
+        </div>
+
+        <form id="editEventForm">
+
+            <input type="hidden" id="editEventId">
+
+            <div class="form-group">
+                <label>Event Title</label>
+                <input type="text" id="editEventTitle" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="editEventDescription"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Event Date: </label>
+                <label id="editEventDateName"></label>
+            </div>
+
+            <div class="form-group">
+                <label>Update Event Date</label>
+                <input type="date" id="editEventDate">
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Update Event
             </button>
 
         </form>
@@ -155,6 +252,11 @@ async function loadEvents() {
                     Delete
                 </button>
 
+                <button class="action-btn edit-btn edit-btn-js"
+                        data-id="${event.id}">
+                    Edit
+                </button>
+
             </div>
 
         </div>
@@ -177,6 +279,11 @@ document.addEventListener("click", (e) => {
         deleteEvent(id);
     }
 
+    // Edit event
+    if (e.target.classList.contains("edit-btn-js")) {
+        const id = e.target.dataset.id;
+        editEvent(id);
+    }
 });
 
 /* ---------------- DELETE EVENT ---------------- */
@@ -196,6 +303,74 @@ async function deleteEvent(id) {
     loadEvents();
 }
 
+/* ---------------- EDIT EVENT ---------------- */
+
+async function editEvent(id) {
+
+    try {
+
+        const res = await fetch(`/api/events/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json"
+            }
+        });
+
+        const event = await res.json();
+
+        document.getElementById("editEventId").value = event.id;
+        document.getElementById("editEventTitle").value = event.title;
+        document.getElementById("editEventDescription").value = event.description ?? "";
+        document.getElementById("editEventDateName").innerHTML = event.event_date;
+
+        document.getElementById("editModal").style.display = "flex";
+
+    } catch (err) {
+        console.error("Failed to load event", err);
+    }
+}
+
+
+/* ---------------- UPDATE EVENT ---------------- */
+
+document.getElementById("editEventForm")
+.addEventListener("submit", async function (e) {
+
+    e.preventDefault();
+
+    const id = document.getElementById("editEventId").value;
+
+    const formData = {
+        title: document.getElementById("editEventTitle").value,
+        description: document.getElementById("editEventDescription").value,
+        event_date: document.getElementById("editEventDate").value
+    };
+
+    try {
+
+        const res = await fetch(`/api/events/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+
+        alert(data.message ?? "Event updated");
+
+        document.getElementById("editModal").style.display = "none";
+
+        loadEvents();
+
+    } catch (err) {
+        console.error("Update failed", err);
+    }
+});
+
 /* ---------------- LOGOUT ---------------- */
 
 document.getElementById("logoutBtn").addEventListener("click", async () => {
@@ -212,6 +387,7 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     window.location.href = "/html/auth/login.html";
 });
 
+
 /* ---------------- MODAL ---------------- */
 
 const modal = document.getElementById("createModal");
@@ -222,6 +398,11 @@ document.getElementById("openCreateBtn").onclick = () => {
 
 document.getElementById("closeCreateBtn").onclick = () => {
     modal.style.display = "none";
+};
+
+
+document.getElementById("closeEditBtn").onclick = () => {
+    document.getElementById("editModal").style.display = "none";
 };
 
 /* ---------------- CREATE EVENT ---------------- */
@@ -252,6 +433,103 @@ document.getElementById("createEventForm").addEventListener("submit", async func
     modal.style.display = "none";
     this.reset();
     loadEvents();
+});
+
+
+//Profile
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const profileBtn = document.getElementById("profileBtn");
+    const profileModal = document.getElementById("profileModal");
+    const closeProfileBtn = document.getElementById("closeProfileBtn");
+    const profileForm = document.getElementById("profileForm");
+
+    if (!profileBtn || !profileModal) {
+        console.error("Profile elements missing in DOM");
+        return;
+    }
+
+    // OPEN PROFILE
+    profileBtn.addEventListener("click", async () => {
+
+        profileModal.style.display = "flex";
+
+        try {
+            const res = await fetch("/api/organizers", {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json"
+                }
+            });
+
+            const user = await res.json(); // FIXED (no [0])
+
+            document.getElementById("profileId").value = user.id;
+            document.getElementById("profileName").value = user.name;
+            document.getElementById("profileEmail").value = user.email;
+            document.getElementById("profilePassword").value = user.password;
+
+        } catch (err) {
+            console.error("Failed to load profile", err);
+        }
+    });
+
+    // CLOSE PROFILE
+    closeProfileBtn?.addEventListener("click", () => {
+        profileModal.style.display = "none";
+    });
+
+    // UPDATE PROFILE
+    profileForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const id = document.getElementById("profileId").value;
+
+        const formData = {
+            name: document.getElementById("profileName").value,
+            email: document.getElementById("profileEmail").value,
+            password: document.getElementById("profilePassword").value
+        };
+
+        const res = await fetch(`/api/organizers/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+
+        alert(data.message ?? "Profile updated");
+
+        profileModal.style.display = "none";
+    });
+
+
+    // Delete Account
+    document.getElementById("deleteAccountBtn").addEventListener("click", async () => {
+
+    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+        return;
+    }
+
+    await fetch("/api/organizers/{id}", {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    localStorage.clear();
+    window.location.href = "/html/auth/login.html";
+});
+
+
 });
 </script>
 

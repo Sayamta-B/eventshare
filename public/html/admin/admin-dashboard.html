@@ -10,44 +10,72 @@
 
 <body>
 
-    <div class="topbar">
+<div class="layout">
 
-        <div class="logo">
-            EventShare Admin
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            EventShare
         </div>
 
-        <button class="logout-btn" onclick="logout()">
+        <nav class="sidebar-nav">
+
+            <a href="admin-dashboard.html" class="nav-link active">
+                📅 Events
+            </a>
+
+            <a href="organizerList.html" class="nav-link">
+                👥 Organizers
+            </a>
+
+        </nav>
+
+        <button class="logout-btn sidebar-logout" onclick="logout()">
             Logout
         </button>
 
-    </div>
+    </aside>
 
-    <h1>All Events</h1>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
-    <p class="subtitle">
-        Manage and moderate all platform events.
-    </p>
+        <div class="topbar">
 
-    <table class="events-table">
+            <div>
+                <h1>All Events</h1>
 
-        <thead>
+                <p class="subtitle">
+                    Manage and moderate all platform events.
+                </p>
+            </div>
 
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Slug</th>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
+        </div>
 
-        </thead>
+        <table class="events-table">
 
-        <tbody id="eventsContainer">
+            <thead>
 
-        </tbody>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Slug</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
 
-    </table>
+            </thead>
+
+            <tbody id="eventsContainer">
+
+            </tbody>
+
+        </table>
+
+    </main>
+
+</div>
 
 <script>
 

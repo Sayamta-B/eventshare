@@ -64,4 +64,51 @@ class AuthController extends Controller
             "message"=>"Logged out sucessfully"
         ]);        
     }
+
+    public function index(Request $request){
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            $users = User::all();
+        } else {
+            $users = User::where('id', $user->id)->first();
+        }
+        return response()->json($users);
+    }
+
+    public function update(Request $request, $id){
+        $users= User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:users,email,'.$users->id,
+            'password' => 'sometimes|required|min:8'
+        ]);
+
+        if($request->has('name')){
+            $users->name = $request->name;
+        }
+        if($request->has('email')){
+            $users->email = $request->email;
+        }
+        if($request->has('password')){
+            $users->password = bcrypt($request->password);
+        }
+
+        $users->save();
+
+        return response()->json([
+            "message" => "Profile updated successfully",
+            "user" => $users
+        ]);
+    }
+
+    public function destroy($id){
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return response()->json([
+            "message" => "User deleted successfully"
+        ]);
+    }
 }

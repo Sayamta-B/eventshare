@@ -11,6 +11,44 @@ body{
     padding:40px;
 }
 
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: #111;
+    color: #fff;
+}
+
+.nav-left {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-logo {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.nav-link {
+    color: #ddd;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #fff;
+}
+
+.nav-btn {
+    background: #4f46e5;
+    border: none;
+    padding: 8px 12px;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
 /* TOPBAR */
 
 .topbar{
@@ -18,6 +56,19 @@ body{
     justify-content:space-between;
     align-items:center;
     margin-bottom:50px;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
 }
 
 .logo{

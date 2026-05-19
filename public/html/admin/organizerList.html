@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizers - EventShare Admin</title>
+
+    <link rel="stylesheet" href="../../css/admin/organizerList.css">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div>
+            <div class="sidebar-logo">EventShare Admin</div>
+
+            <nav class="sidebar-nav">
+
+                <a href="admin-dashboard.html" class="nav-link">
+                    📅 Events
+                </a>
+
+                <a href="organizerList.html" class="nav-link active">
+                    👥 Organizers
+                </a>
+
+            </nav>
+        </div>
+
+        <button class="sidebar-logout" onclick="logout()">
+            Logout
+        </button>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <div class="page-header">
+            <h1>Organizers</h1>
+            <p class="subtitle">Manage all registered organizers.</p>
+        </div>
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="organizerContainer"></tbody>
+
+        </table>
+
+    </main>
+
+</div>
+
+<script>
+
+const token = localStorage.getItem("token");
+
+/* LOAD ORGANIZERS */
+
+async function loadOrganizers() {
+
+    const res = await fetch("/api/organizers", {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    const data = await res.json();
+
+    const organizers = Array.isArray(data) ? data : [data];
+
+    const container = document.getElementById("organizerContainer");
+
+    if (organizers.length === 0 || !organizers[0]) {
+        container.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty">No organizers found</td>
+            </tr>
+        `;
+        return;
+    }
+
+    container.innerHTML = organizers.map(user => `
+        <tr>
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.role ?? 'user'}</td>
+            <td>
+                <button class="delete-btn" onclick="deleteOrganizer(${user.id})">
+                    Delete
+                </button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+/* DELETE ORGANIZER */
+
+async function deleteOrganizer(id) {
+
+    if (!confirm("Delete this organizer?")) return;
+
+    const res = await fetch(`/api/organizers/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    const data = await res.json();
+
+    alert(data.message ?? "Deleted");
+
+    loadOrganizers();
+}
+
+/* LOGOUT */
+
+async function logout() {
+
+    await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json"
+        }
+    });
+
+    localStorage.clear();
+    window.location.href = "/html/auth/login.html";
+}
+
+/* INIT */
+
+loadOrganizers();
+
+</script>
+
+</body>
+</html>

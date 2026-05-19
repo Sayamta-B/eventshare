@@ -37,10 +37,15 @@ class EventController extends Controller
         ]);
     }
 
+    public function edit(Request $request, $id){
+        $events= Event::findOrFail($id);
+        return response()->json($events);
+    }
+
     public function update(Request $request, $id){
         $events= Event::findOrFail($id);
         $events->update([
-            'user_id'=> 1,
+            'user_id'=> $request->user()->id,
             'title'=> $request->title,
             'slug' => \Str::slug($request->title),
             'description'=> $request->description,

@@ -1,16 +1,11 @@
-/* =========================
-   RESET
-========================= */
-
+/* RESET */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* =========================
-   LAYOUT
-========================= */
+/* LAYOUT */
 
 body {
     font-family: Arial, Helvetica, sans-serif;
@@ -18,16 +13,12 @@ body {
     color: #222;
 }
 
-/* MAIN WRAPPER */
-
 .layout {
     display: flex;
     min-height: 100vh;
 }
 
-/* =========================
-   SIDEBAR
-========================= */
+/* SIDEBAR */
 
 .sidebar {
     width: 260px;
@@ -35,7 +26,6 @@ body {
     color: #fff;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     padding: 25px 18px;
 }
 
@@ -44,16 +34,12 @@ body {
     font-weight: 700;
     margin-bottom: 30px;
     color: #6c4cff;
-    letter-spacing: -1px;
 }
-
-/* NAV LINKS */
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 350px;
 }
 
 .nav-link {
@@ -61,8 +47,7 @@ body {
     color: #cbd5e1;
     padding: 12px 14px;
     border-radius: 10px;
-    font-weight: 500;
-    transition: 0.2s ease;
+    transition: 0.2s;
 }
 
 .nav-link:hover {
@@ -75,43 +60,33 @@ body {
     color: #fff;
 }
 
-/* LOGOUT */
-
 .sidebar-logout {
-    margin-top: 20px;
-    width: 100%;
-    padding: 12px;
+    margin-top: auto;
+    background: #ff4d4d;
     border: none;
+    padding: 12px;
+    color: #fff;
     border-radius: 10px;
     cursor: pointer;
-    font-weight: 600;
-    background: #ff4d4d;
-    color: #fff;
-    transition: 0.25s ease;
 }
 
 .sidebar-logout:hover {
     background: #e63c3c;
-    transform: translateY(-2px);
 }
 
-/* =========================
-   MAIN CONTENT
-========================= */
+/* MAIN */
 
 .main-content {
     flex: 1;
     padding: 40px;
 }
 
-/* HEADER AREA */
-
 .page-header {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 h1 {
-    font-size: 42px;
+    font-size: 40px;
     margin-bottom: 10px;
 }
 
@@ -120,55 +95,39 @@ h1 {
     font-size: 18px;
 }
 
-/* =========================
-   TABLE
-========================= */
+/* TABLE */
 
-.events-table {
+.table {
     width: 100%;
     border-collapse: collapse;
     background: #fff;
     border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.06);
 }
 
-.events-table thead {
+.table thead {
     background: linear-gradient(135deg, #6c4cff, #8d72ff);
 }
 
-.events-table th {
+.table th {
     padding: 18px;
     text-align: left;
     color: #fff;
     font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.4px;
 }
 
-.events-table td {
+.table td {
     padding: 18px;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 15px;
+    border-bottom: 1px solid #eee;
     color: #444;
-    vertical-align: top;
 }
 
-.events-table tbody tr {
-    transition: 0.2s ease;
-}
-
-.events-table tbody tr:hover {
+.table tbody tr:hover {
     background: #f8f7ff;
 }
 
-.events-table tr:last-child td {
-    border-bottom: none;
-}
-
-/* =========================
-   BUTTONS
-========================= */
+/* BUTTON */
 
 .delete-btn {
     background: #ff4d4d;
@@ -178,28 +137,22 @@ h1 {
     border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
-    transition: 0.2s ease;
+    transition: 0.2s;
 }
 
 .delete-btn:hover {
     background: #e63c3c;
-    transform: translateY(-1px);
 }
 
-/* =========================
-   EMPTY STATE
-========================= */
+/* EMPTY */
 
 .empty {
     text-align: center;
-    padding: 40px !important;
+    padding: 30px !important;
     color: #888;
-    font-size: 16px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 
 @media (max-width: 900px) {
 
@@ -210,26 +163,15 @@ h1 {
     .sidebar {
         width: 100%;
         flex-direction: row;
+        justify-content: space-between;
         align-items: center;
-        justify-content: flex-start;
     }
 
     .sidebar-nav {
         flex-direction: row;
-        gap: 10px;
     }
 
     .main-content {
         padding: 20px;
-    }
-
-    h1 {
-        font-size: 32px;
-    }
-
-    .events-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
     }
 }

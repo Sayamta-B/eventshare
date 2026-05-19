@@ -21,17 +21,18 @@ Route::middleware(['auth:sanctum', 'role:admin,organizer'])->group(function(){
     Route::get('/events', [EventController::class, 'index']);
     Route::delete('/events/{id}', [EventController::class, 'destroy']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/organizers', [AuthController::class, 'index']);
+    Route::delete('/organizers/{id}', [AuthController::class, 'destroy']);
 });
 
 Route::middleware(['auth:sanctum', 'role:organizer'])->group(function(){
     Route::post('/events', [EventController::class, 'store']);
     Route::put('/events/{id}', [EventController::class, 'update']);
+    Route::get('/events/{id}', [EventController::class, 'edit']);
+
+    Route::put('/organizers/{id}', [AuthController::class, 'update']);
 });
-
-//admin can view and delete organizer's data
-//organizer can crud their data
-
-//guest can add and delete uploads 
 
 Route::get('public/events/{slug}', [EventController::class, 'showPublic']);
 
