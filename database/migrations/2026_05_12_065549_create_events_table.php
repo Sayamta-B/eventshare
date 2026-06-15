@@ -23,6 +23,12 @@ return new class extends Migration
 
             $table->dateTime('event_date')->nullable();
 
+            $table->dateTime('upload_deadline')
+                ->nullable();
+
+            $table->boolean('gallery_visible')
+                ->default(true);
+
             $table->timestamps();
         });
     }
