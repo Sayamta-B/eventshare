@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Guest extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'event_id',
         'name',
+        'session_token',
     ];
 
     public function event()

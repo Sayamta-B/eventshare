@@ -23,6 +23,8 @@ return new class extends Migration
 
             $table->dateTime('event_date')->nullable();
 
+            $table->string('location')->nullable();
+
             $table->dateTime('upload_deadline')
                 ->nullable();
 
@@ -30,6 +32,7 @@ return new class extends Migration
                 ->default(true);
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

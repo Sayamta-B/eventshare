@@ -47,3 +47,16 @@ Route::middleware(['auth:sanctum', 'role:organizer'])->group(function () {
     Route::put('/events/{slug}/uploads/{id}', [UploadController::class, 'update']);
     Route::delete('/events/{slug}/uploads/{id}', [UploadController::class, 'destroy']);
 });
+
+Route::get('/test-n8n', function () {
+
+    $response = Http::post('http://192.168.1.200:5678/webhook/event-upload', [
+        'event' => 'Farewell 2026',
+        'guest' => 'John',
+        'file_type' => 'photo',
+        'upload_id' => 1,
+        'organizer_email' => 'forlabworks9@gmail.com'
+    ]);
+
+    return $response->body();
+});

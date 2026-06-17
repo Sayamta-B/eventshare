@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('session_token')->unique();
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
