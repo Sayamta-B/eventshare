@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 
 class Event extends Model
@@ -19,6 +20,14 @@ class Event extends Model
         'upload_deadline',
         'gallery_visible',
     ];
+
+    protected static function booted()
+    {
+        static::created(function ($event) {
+            $event->slug = Str::slug($event->title) . '-' . $event->id;
+            $event->save();
+        });
+    }
 
     public function user()
     {

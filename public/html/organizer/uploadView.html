@@ -140,7 +140,7 @@ async function updateStatus(id, status) {
             "Content-Type": "application/json",
             "Accept": "application/json"
         },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status, slug })
     });
 
     loadUploads();

@@ -22,6 +22,7 @@ return new class extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+            $table->timestamp('last_upload_at')->nullable();
         });
     }
 

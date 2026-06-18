@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use App\Models\Event;
 use App\Models\User;
 
@@ -26,9 +27,11 @@ class EventController extends Controller
         $event= Event::create([
             'user_id'=> $request->user()->id,
             'title'=> $request->title,
-            'slug' => \Str::slug($request->title), //slug is the string version of title
             'description'=> $request->description,
             'event_date'=> $request->event_date,
+            'location'=>$request->location,
+            'upload_deadline'=>$request->upload_deadline,
+            'gallery_visible'=>$request->gallery_visible ?? true,
         ]);
 
         return response()->json([

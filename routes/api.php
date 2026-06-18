@@ -40,12 +40,12 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.su
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
 
-Route::post('/events/{slug}/uploads', [UploadController::class, 'upload']);
+Route::post('/events/{eventSlug}/uploads', [UploadController::class, 'upload']);
 
 Route::middleware(['auth:sanctum', 'role:organizer'])->group(function () {
-    Route::get('/events/{slug}/uploads', [UploadController::class, 'index']);
-    Route::put('/events/{slug}/uploads/{id}', [UploadController::class, 'update']);
-    Route::delete('/events/{slug}/uploads/{id}', [UploadController::class, 'destroy']);
+    Route::get('/events/{eventSlug}/uploads', [UploadController::class, 'index']);
+    Route::put('/events/{eventSlug}/uploads/{id}', [UploadController::class, 'update']);
+    Route::delete('/events/{eventSlug}/uploads/{id}', [UploadController::class, 'destroy']);
 });
 
 Route::get('/test-n8n', function () {

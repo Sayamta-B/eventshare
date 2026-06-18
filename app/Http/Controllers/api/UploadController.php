@@ -30,7 +30,8 @@ class UploadController extends Controller
         // Create Guest      
         $guest = Guest::create([
             'event_id' => $event->id,
-            'name' => $request->guest_name
+            'name' => $request->guest_name,
+            'session_token' => \Str::random(32)
         ]);
 
         // Store File in storage/public
