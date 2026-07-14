@@ -31,6 +31,7 @@ return new class extends Migration
             $table->boolean('gallery_visible')
                 ->default(true);
 
+            $table->timestamp('last_upload_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
